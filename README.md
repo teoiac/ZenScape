@@ -22,3 +22,6 @@ The environment is intentionally slow, gentle, and non-competitive — there are
 - Three objects are labeled: **Negative Thought**, **Neutral Thought**, **Positive Thought**.
 - The player picks up the **Positive Thought** object and places it on a pedestal.
 - The pedestal glows and a door slowly unlocks, signaling completion.
+
+
+Link to State of the art : https://docs.google.com/document/d/1L3qNwX425NrUcHWvk79AXFneLt9IF1gBy5XR7Nb6Kak/edit?usp=sharing
