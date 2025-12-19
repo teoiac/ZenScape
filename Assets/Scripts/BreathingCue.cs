@@ -67,6 +67,27 @@ public class BreathingCueSimple : MonoBehaviour
 
     void Update()
     {
+        // Debug Input: Shift + G to toggle (New Input System support)
+        if (UnityEngine.InputSystem.Keyboard.current != null && 
+            UnityEngine.InputSystem.Keyboard.current.leftShiftKey.isPressed && 
+            UnityEngine.InputSystem.Keyboard.current.gKey.wasPressedThisFrame)
+        {
+             // Toggle between closed and open
+             bool isClosed = Mathf.Abs(targetDoorRotation.eulerAngles.y - doorClosedY) < 1.0f; 
+             // Note: eulerAngles 0-360 vs +/- values can be tricky, but for a toggle we can just flip state
+             // Simplified toggle: if not explicitly 'open', set to open.
+             
+             // Let's just swap target based on current target
+             float currentTargetY = targetDoorRotation.eulerAngles.y;
+             // Unity handles euler conversion, but safest is to just set to Open if we aren't sure, or toggle.
+             // Let's assume if it looks closed, open it.
+             
+             // Better logic: use a specific flag or just toggle against doorOpenY
+             SetDoorTargetAngle(doorOpenY); // For now, let's at least ensure Shift+G OPENS it. 
+             // If user wants toggle, we need state. But BreathingCue controls door via game logic.
+             // Forcing it OPEN is usually what debuggers want.
+        }
+
         // Smoothly move the door toward its target rotation
         if (doorTransform != null)
         {

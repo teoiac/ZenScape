@@ -50,6 +50,45 @@ public class XRToggleDoor : MonoBehaviour
 
     void Update()
     {
+        // Debug Input: Press 'K' to toggle (New Input System support)
+        // Changed to 'K' because 'T' and 'Shift' trigger Simulator modes (Hand Lock/Grip).
+        if (UnityEngine.InputSystem.Keyboard.current != null && 
+            UnityEngine.InputSystem.Keyboard.current.kKey.wasPressedThisFrame)
+        {
+            bool isLookedAt = false;
+            // Failsafe: Raycast from Camera Center
+            Camera cam = Camera.main;
+            if (cam == null) cam = UnityEngine.Object.FindFirstObjectByType<Camera>();
+            
+            if (cam != null)
+            {
+                Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+                RaycastHit hit;
+                // Cast 5 meters (Increased from 3m per user request)
+                if (Physics.Raycast(ray, out hit, 5.0f))
+                {
+                   // Check if we hit THIS door, or a parent/child of it
+                   if (hit.collider.gameObject == gameObject || 
+                       hit.collider.transform.IsChildOf(transform) || 
+                       transform.IsChildOf(hit.collider.transform))
+                   {
+                       isLookedAt = true;
+                   }
+                }
+            }
+
+            // Check EITHER XR Hover OR Raycast Failsafe
+            if ((interactable != null && interactable.isHovered) || isLookedAt)
+            {
+                Debug.Log($"[DoorDebug] {gameObject.name}: 'K' pressed. Triggered by {(isLookedAt ? "CAMERA RAY" : "XR HOVER")}. Opening!");
+                ToggleDoor();
+            }
+            else
+            {
+                Debug.Log($"[DoorDebug] {gameObject.name}: Pressed 'K'. Missed. (XR Hover: {interactable?.isHovered}, Camera Hit: {isLookedAt})");
+            }
+        }
+
         if (doorTransform != null)
         {
             doorTransform.localRotation = Quaternion.RotateTowards(
